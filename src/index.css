@@ -1,0 +1,206 @@
+/* ============================================
+   GLOBAL STYLES & DESIGN SYSTEM
+   3D Portfolio — Yeshwanth
+============================================ */
+
+/* ---- Font Faces ---- */
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/urbanist-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/urbanist-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/urbanist-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ProFont';
+  src: url('/fonts/pro-font-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ProFont';
+  src: url('/fonts/pro-font-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- CSS Variables ---- */
+:root {
+  --bg-color: #EDE8DF;
+  --bg-cream-dark: #E8E4DC;
+  --bg-dark-blue: #071230;
+  --accent-orange: #FF6B35;
+  --accent-orange-dark: #D06A08;
+  --accent-blue: #2563EB;
+  --accent-blue-bright: #00AAFF;
+  --hologram-blue: #00CFFF;
+  --text-dark: #111111;
+  --text-medium: #3A3A3A;
+  --text-light: #888888;
+  --text-white: #FFFFFF;
+  --nav-bg: rgba(235, 235, 235, 0.88);
+  --nav-border: rgba(0, 0, 0, 0.08);
+  --card-bg: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.07);
+  --font-primary: 'Urbanist', system-ui, sans-serif;
+  --font-mono: 'ProFont', 'Courier New', monospace;
+  --section-pad-h: clamp(1.5rem, 5vw, 6rem);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 0.2s;
+  --duration-med: 0.35s;
+  --section-pad-v: clamp(3rem, 6vh, 6rem);
+  --z-canvas: 0;
+  --z-sections: 10;
+  --z-nav: 100;
+  --z-cursor: 200;
+  --z-loader: 300;
+}
+
+/* ---- Reset ---- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+  /* we handle this manually */
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--text-dark);
+  background-color: var(--bg-color);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+@media (hover: none) {
+  body {
+    cursor: auto;
+  }
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: none;
+  border: none;
+  background: none;
+}
+
+/* ---- Utility ---- */
+.section-badge {
+  display: inline-block;
+  background: var(--accent-blue);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   CANVAS — see Scene.css for base positioning.
+   Here we just handle pointer-events layering.
+============================================================ */
+.canvas-root {
+  pointer-events: none;
+  /* let scroll events fall through */
+}
+
+.canvas-root canvas {
+  pointer-events: auto;
+}
+
+/* ============================================================
+   MAIN SCROLL CONTAINER
+   Sections sit on top of the canvas and scroll normally.
+   They have transparent backgrounds except the projects section
+   (which needs a solid bg to cover the 3D canvas).
+============================================================ */
+.main-scroll {
+  position: relative;
+  z-index: var(--z-sections);
+  pointer-events: none;
+  /* transparent to clicks by default */
+}
+
+/* Re-enable clicks on anything interactive inside sections */
+.main-scroll a,
+.main-scroll button,
+.main-scroll input,
+.main-scroll textarea,
+.main-scroll [data-interactive] {
+  pointer-events: all;
+}
+
+/* ============================================================
+   ABOUT SECTION — body gets data-section="about"
+   We overlay a semi-transparent dark blue div so HTML text
+   is readable while the 3D canvas behind stays visible.
+============================================================ */
+body[data-section="about"] {
+  background: var(--bg-dark-blue);
+}
+
+/* ============================================================
+   PROJECTS SECTION — needs solid background to hide canvas
+============================================================ */
+#projects {
+  background: var(--bg-color);
+  pointer-events: all;
+}
+
+/* ============================================================
+   HERO SECTION — transparent, canvas shows through
+============================================================ */
+#home {
+  background: transparent;
+}
+
+/* ============================================================
+   CONTACT SECTION — slightly warm cream, transparent-ish
+============================================================ */
+#contact {
+  background: transparent;
+}

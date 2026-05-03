@@ -1,0 +1,54 @@
+/* Cursor elements are positioned fixed at 0,0 and moved via transform */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  will-change: transform;
+  border-radius: 50%;
+}
+
+/* Small inner dot */
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--text-dark);
+  margin-top: -3px;
+  margin-left: -3px;
+  transition: width 0.2s, height 0.2s, background 0.2s, margin 0.2s;
+}
+.cursor-dot--hover {
+  width: 10px;
+  height: 10px;
+  background: var(--accent-orange);
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+/* Larger outer ring (lags behind) */
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(26, 26, 26, 0.5);
+  margin-top: -18px;
+  margin-left: -18px;
+  transition: width 0.3s var(--ease-smooth),
+              height 0.3s var(--ease-smooth),
+              border-color 0.3s,
+              margin 0.3s var(--ease-smooth);
+}
+.cursor-ring--hover {
+  width: 52px;
+  height: 52px;
+  border-color: var(--accent-orange);
+  margin-top: -26px;
+  margin-left: -26px;
+  background: rgba(245, 130, 10, 0.06);
+}
+
+/* Hide on touch devices */
+@media (hover: none) {
+  .cursor-dot, .cursor-ring { display: none; }
+}

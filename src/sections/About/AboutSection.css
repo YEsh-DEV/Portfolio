@@ -1,0 +1,129 @@
+/* =======================
+   ABOUT SECTION
+======================= */
+.about-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Full-section dark overlay — canvas (hologram) shows through */
+.about-overlay {
+  position: absolute;
+  inset: 0;
+  /* Dark blue with slight transparency so the 3D glows show */
+  background: rgba(7, 18, 48, 0.82);
+  z-index: 1;
+}
+
+/* Perspective grid lines on the floor */
+.about-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(27, 100, 220, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27, 100, 220, 0.28) 1px, transparent 1px);
+  background-size: 55px 55px;
+  background-position: center bottom;
+  /* Fade out toward top */
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.0) 55%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.0) 55%);
+}
+
+/* Annotation cards — left panel */
+.about-annotations {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-left: var(--section-pad-h);
+  padding-top: 6rem; /* below nav */
+}
+
+/* Individual card */
+.about-card {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.about-card__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  flex-shrink: 0;
+}
+.about-card__line {
+  width: 40px;
+  height: 1.5px;
+  background: rgba(255,255,255,0.4);
+  flex-shrink: 0;
+}
+
+.about-card__body {
+  background: rgba(255,255,255,0.09);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.about-card__name {
+  display: block;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.about-card__location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+}
+.about-card__location svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.about-card__bio {
+  font-family: var(--font-mono);
+  font-size: 0.77rem;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.75);
+}
+
+/* Pedestal number */
+.about-pedestal-num {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .about-annotations { padding-left: 1.25rem; }
+  .about-card__body { max-width: 220px; }
+}

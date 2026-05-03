@@ -1,0 +1,173 @@
+/* ============================================================
+   HERO SECTION — Matched to reference site
+   Replace your existing HeroSection.css with this file
+   ============================================================ */
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--section-pad-h);
+  background: transparent;
+  /* ← transparent: shows --bg-cream from body */
+  overflow: hidden;
+}
+
+/* Subtle warm vignette — matches reference's soft blue-cream edges */
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 100% 50% at 0% 50%, rgba(20, 55, 200, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(20, 55, 200, 0.13) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 100% at 100% 50%, rgba(20, 55, 200, 0.04) 0%, transparent 60%);
+}
+
+/* ── Text block — left side ── */
+.hero-text {
+  position: relative;
+  z-index: 2;
+  width: 48%;
+  max-width: 560px;
+}
+
+/* Big bold name — Urbanist Black 900 */
+.hero-name {
+  font-family: var(--font-primary);
+  font-weight: 900;
+  /* Reference: name breaks to 2 lines, very large */
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--text-dark);
+  /* #1a1a1a — very dark near-black */
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.hero-name span {
+  display: inline-block;
+}
+
+/* 
+  If your name has a space (two words), force 2-line layout:
+  Add a <br/> or space character as a span that takes full width
+*/
+.hero-name__break {
+  width: 100%;
+  display: block;
+  height: 0;
+}
+
+/* "WEB DEVELOPER" badge — ProFont mono, blue pill */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent-blue);
+  /* #1b4fd8 — exact blue from reference */
+  border-radius: 6px;
+  padding: 0.42rem 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.hero-badge span {
+  font-family: var(--font-mono);
+  /* ProFont — the chunky monospace */
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ── Scroll indicator — bottom center ── */
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scroll-mouse {
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(26, 26, 26, 0.45);
+  border-radius: 13px;
+  display: flex;
+  justify-content: center;
+  padding-top: 7px;
+}
+
+.scroll-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--text-dark);
+  border-radius: 50%;
+  animation: scrollDot 2s ease-in-out infinite;
+}
+
+@keyframes scrollDot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  60% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+
+  61% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.scroll-chevron {
+  width: 14px;
+  height: 9px;
+  color: rgba(26, 26, 26, 0.45);
+  animation: chevronBounce 2s ease-in-out infinite;
+}
+
+@keyframes chevronBounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-text {
+    width: 90%;
+  }
+
+  .hero-name {
+    font-size: clamp(2.6rem, 11vw, 4rem);
+  }
+}

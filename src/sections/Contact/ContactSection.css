@@ -1,0 +1,73 @@
+/* =======================
+   CONTACT SECTION
+======================= */
+.contact-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  background: transparent; /* 3D canvas shows through */
+  padding: 9rem var(--section-pad-h) 4rem;
+}
+
+.contact-content {
+  position: relative;
+  z-index: 2;
+  max-width: 580px;
+  pointer-events: all;
+}
+
+/* Heading */
+.contact-heading {
+  font-family: var(--font-primary);
+  font-weight: 900;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text-dark);
+  margin-bottom: 2rem;
+}
+.contact-heading__accent {
+  color: var(--accent-orange);
+}
+
+/* Social buttons row */
+.contact-socials {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.contact-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.22);
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  color: var(--text-dark);
+  transition:
+    background 0.22s var(--ease-smooth),
+    border-color 0.22s,
+    color 0.22s,
+    transform 0.22s var(--ease-bounce);
+}
+.contact-social-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.contact-social-btn:hover {
+  background: var(--text-dark);
+  border-color: var(--text-dark);
+  color: #fff;
+  transform: translateY(-4px) scale(1.08);
+}
+
+@media (max-width: 640px) {
+  .contact-section { padding: 7rem 1.25rem 3rem; }
+  .contact-heading { font-size: clamp(2rem, 9vw, 3rem); }
+}

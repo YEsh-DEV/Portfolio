@@ -1,0 +1,111 @@
+.project-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  transition: transform 0.35s var(--ease-bounce),
+              box-shadow 0.35s var(--ease-smooth);
+}
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+
+.project-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+/* ---- Thumbnail ---- */
+.project-card__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #ddd;
+}
+
+.project-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease-smooth);
+}
+.project-card:hover .project-card__img {
+  transform: scale(1.04);
+}
+
+/* Fallback gradient if image fails */
+.project-card__thumb--fallback {
+  background: linear-gradient(135deg, #1B4FD8 0%, #F5820A 100%);
+}
+
+/* Arrow button on thumbnail */
+.project-card__arrow {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  background: var(--accent-orange);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.25s, transform 0.25s var(--ease-bounce);
+  box-shadow: 0 4px 12px rgba(245,130,10,0.4);
+}
+.project-card__arrow svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+.project-card:hover .project-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---- Card Body ---- */
+.project-card__body {
+  padding: 1.1rem 1.25rem 1.3rem;
+}
+
+.project-card__title {
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+
+.project-card__description {
+  font-size: 0.875rem;
+  color: var(--text-medium);
+  line-height: 1.5;
+  margin-bottom: 0.8rem;
+}
+
+/* Tech tags */
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+}
+.project-card__tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--accent-blue);
+  background: rgba(27, 79, 216, 0.08);
+  border: 1px solid rgba(27, 79, 216, 0.15);
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+}

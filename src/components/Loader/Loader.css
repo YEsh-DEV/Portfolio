@@ -1,0 +1,66 @@
+/* =======================
+   LOADING SCREEN
+======================= */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  background: var(--bg-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+.loader--done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+/* Animated name */
+.loader-name {
+  font-family: var(--font-primary);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  letter-spacing: -0.02em;
+  color: var(--text-dark);
+  display: flex;
+}
+.loader-name span {
+  display: inline-block;
+  animation: letterIn 0.55s var(--ease-bounce) both;
+}
+@keyframes letterIn {
+  from { opacity: 0; transform: translateY(-30px) rotate(-5deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+/* Progress bar */
+.loader-bar-track {
+  width: min(320px, 72vw);
+  height: 4px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%;
+  background: var(--accent-orange);
+  border-radius: 100px;
+  transition: width 0.25s var(--ease-smooth);
+  box-shadow: 0 0 14px rgba(245,130,10,0.55);
+}
+
+.loader-pct {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+}
