@@ -67,11 +67,14 @@ export default function HeroModel() {
 
   // Configure textures
   useMemo(() => {
-    [monitorTex, spritesTex, bgTex, eyesTex].forEach((t) => {
+    [monitorTex, spritesTex, bgTex].forEach((t) => {
       t.colorSpace = THREE.SRGBColorSpace;
       t.flipY = false;
     });
-    monitorTex.wrapS = monitorTex.wrapT = THREE.ClampToEdgeWrapping;
+
+    // Eye texture specific config — flipped to correct "upside down" issue
+    eyesTex.colorSpace = THREE.SRGBColorSpace;
+    eyesTex.flipY = true; 
     eyesTex.wrapS = THREE.RepeatWrapping;
     eyesTex.repeat.set(-1, 1);
     eyesTex.offset.set(1, 0);
@@ -83,7 +86,7 @@ export default function HeroModel() {
     clone.traverse((child) => {
       if (!child.isMesh) return;
       child.castShadow = true;
-      child.receiveShadow = true;
+      child.receiveShadow = false; // Disable to prevent dark shadows from the desk falling on the char
 
       const name = child.name.toLowerCase();
 
@@ -123,7 +126,7 @@ export default function HeroModel() {
     clone.traverse((child) => {
       if (!child.isMesh) return;
       child.castShadow = true;
-      child.receiveShadow = true;
+      child.receiveShadow = false; // Disable by default to keep the scene bright and avoid table shadows
 
       const name = child.name;
       console.log('DESK MESH:', name);
@@ -138,12 +141,12 @@ export default function HeroModel() {
       if (name === 'desktop-plane-1') {
         child.material = new THREE.MeshStandardMaterial({
           map: monitorTex,
-          roughness: 0.15,
+          roughness: 0.9, // Increased roughness to remove bright glare/reflections
           metalness: 0.0,
           emissive: new THREE.Color('#ffffff'),
           emissiveMap: monitorTex,
-          emissiveIntensity: 0.5,
-          envMapIntensity: 0.2,
+          emissiveIntensity: 1.2,
+          envMapIntensity: 0.0, // Remove environment reflections from screen
         });
         return;
       }
@@ -192,9 +195,9 @@ export default function HeroModel() {
       if (color) {
         child.material = new THREE.MeshStandardMaterial({
           color: new THREE.Color(color),
-          roughness: name === 'carpet' ? 0.9 : 0.55,
+          roughness: name === 'carpet' ? 0.9 : 0.4, // Increased contrast (was 0.55)
           metalness: name === 'chair' ? 0.1 : 0.0,
-          envMapIntensity: 0.5,
+          envMapIntensity: 1.2, // Increased contrast (was 0.5)
         });
       }
     });
@@ -242,22 +245,55 @@ export default function HeroModel() {
     }
   }, [actions]);
 
-  // ── Per-frame: visibility ────────────────────────────────────────────────
-  useFrame(({ clock }) => {
+  // ── Per-frame: visibility & performance optimization ──────────────────
+  useFrame((state, delta) => {
     if (!groupRef.current) return;
     const section = useStore.getState().activeSection;
+    const isHome = section === 'home';
+    
+    // HARD CUT: If we are NOT on the home section, the hero model MUST be invisible immediately.
+    // This prevents it from bleeding into the About or other sections.
+    if (!isHome) {
+      opacityRef.current = 0;
+      if (groupRef.current.visible) groupRef.current.visible = false;
+      return;
+    }
 
-    // Visible only on 'home' section
-    const targetOpacity = section === 'home' ? 1 : 0;
-    opacityRef.current += (targetOpacity - opacityRef.current) * 0.05;
-    groupRef.current.visible = opacityRef.current > 0.01;
+    // Faster transition speed
+    const targetOpacity = 1; // Since we hard cut for !isHome, target is always 1 here
+    const prevOpacity = opacityRef.current;
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.2);
+    
+    // Strict visibility toggle
+    const shouldBeVisible = opacityRef.current > 0.01;
+    if (groupRef.current.visible !== shouldBeVisible) {
+      groupRef.current.visible = shouldBeVisible;
+      
+      // Pause/Resume animations to save CPU
+      if (actions) {
+        Object.values(actions).forEach(action => {
+          if (action) action.paused = !shouldBeVisible;
+        });
+      }
+    }
 
-    // Apply opacity to all meshes (for fade transitions)
-    if (opacityRef.current < 0.99) {
+    if (shouldBeVisible) {
+      const mouse = state.pointer;
+      // Base rotation 3.85 + slow continuous rotation + mouse parallax
+      groupRef.current.rotation.y = 3.85 + (state.clock.elapsedTime * 0.05) + (mouse.x * 0.3);
+      groupRef.current.rotation.x = mouse.y * 0.1;
+    }
+
+    // Only traverse to update materials if opacity is actually changing
+    if (Math.abs(opacityRef.current - prevOpacity) > 0.001) {
       groupRef.current.traverse((child) => {
         if (child.isMesh && child.material) {
           child.material.transparent = true;
           child.material.opacity = opacityRef.current;
+          // Optimization: if fully opaque, disable transparency to help depth sorting
+          if (opacityRef.current > 0.99) {
+             child.material.transparent = false;
+          }
         }
       });
     }
@@ -273,6 +309,11 @@ export default function HeroModel() {
     >
       {/* Desk scene (room, desk, chair, decorations) */}
       <primitive object={clonedDesk} />
+
+      {/* Hero Fill Light — ensures the character is always clearly visible regardless of global lighting */}
+      <pointLight position={[-0.5, 2.5, 2]} intensity={5} color="#FFF8F0" distance={6} decay={2} />
+      <pointLight position={[1, 1, 1.5]} intensity={2} color="#FFFFFF" distance={4} decay={2} />
+
       {/* Character — scale/position set on clonedChar via SkeletonUtils */}
       <group ref={charGroupRef}>
         <primitive object={clonedChar} />

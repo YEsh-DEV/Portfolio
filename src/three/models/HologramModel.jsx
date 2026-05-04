@@ -80,7 +80,7 @@ export default function HologramModel() {
     const clone = scene.clone(true);
     clone.traverse((child) => {
       if (child.isMesh) {
-        child.material = hologramMaterial.clone();
+        child.material = hologramMaterial;
       }
     });
     return clone;
@@ -98,35 +98,54 @@ export default function HologramModel() {
     }
   }, [actions]);
 
-  // Hologram pulse + section visibility + pedestal opacity
-  useFrame(({ clock }) => {
+  // ── Per-frame: visibility & performance optimization ──────────────────
+  useFrame((state, delta) => {
     if (!groupRef.current) return;
-    timeRef.current = clock.elapsedTime;
-
     const section = useStore.getState().activeSection;
-    const targetOpacity = section === 'about' ? 1 : 0;
-    opacityRef.current += (targetOpacity - opacityRef.current) * 0.05;
-    groupRef.current.visible = opacityRef.current > 0.01;
+    const isAbout = section === 'about';
 
-    // Slow rotation when visible
-    if (section === 'about') {
-      groupRef.current.rotation.y = clock.elapsedTime * 0.25;
+    // HARD CUT: If we are on the home section, the hologram MUST be invisible immediately.
+    // This prevents it from appearing while the user is still on the landing page.
+    if (section === 'home') {
+      opacityRef.current = 0;
+      if (groupRef.current.visible) groupRef.current.visible = false;
+      return;
     }
 
-    // Update shader uniforms on all meshes
-    groupRef.current.traverse((child) => {
-      if (child.isMesh && child.material?.uniforms) {
-        child.material.uniforms.uTime.value = clock.elapsedTime;
-        child.material.uniforms.uOpacity.value = opacityRef.current;
-      }
-    });
+    // Faster transition speed for other sections
+    const targetOpacity = isAbout ? 1 : 0;
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.15);
 
-    // Update pedestal elements via refs (not JSX — refs don't re-render)
+    // Strict visibility toggle
+    const shouldBeVisible = opacityRef.current > 0.01;
+    if (groupRef.current.visible !== shouldBeVisible) {
+      groupRef.current.visible = shouldBeVisible;
+
+      // Pause/Resume animations
+      if (actions) {
+        Object.values(actions).forEach(action => {
+          if (action) action.paused = !shouldBeVisible;
+        });
+      }
+    }
+
+    // Slow rotation when visible
+    if (shouldBeVisible) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.25;
+    }
+
+    // Update shared material uniforms once (NO TRAVERSAL NEEDED)
+    hologramMaterial.uniforms.uTime.value = state.clock.elapsedTime;
+    hologramMaterial.uniforms.uOpacity.value = opacityRef.current;
+
+    // Update pedestal elements via refs
     if (ringRef.current) {
       ringRef.current.material.opacity = 0.6 * opacityRef.current;
+      ringRef.current.visible = shouldBeVisible;
     }
     if (diskRef.current) {
       diskRef.current.material.opacity = 0.3 * opacityRef.current;
+      diskRef.current.visible = shouldBeVisible;
     }
     if (lightRef.current) {
       lightRef.current.intensity = 4 * opacityRef.current;

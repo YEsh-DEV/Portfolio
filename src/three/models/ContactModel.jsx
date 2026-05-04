@@ -17,6 +17,10 @@ export default function ContactModel() {
 
   const clonedScene = useMemo(() => {
     const clone = scene.clone(true);
+    // Reset internal transforms to ensure component-level positioning works correctly
+    clone.position.set(0, 0, 0);
+    clone.rotation.set(0, 0, 0);
+    clone.scale.set(1, 1, 1);
     clone.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
@@ -37,32 +41,54 @@ export default function ContactModel() {
   useEffect(() => {
     if (!actions) return;
     if (actions['contact-idle']) {
-        actions['contact-idle'].reset().fadeIn(0.5).play();
-        actions['contact-idle'].setLoop(THREE.LoopRepeat, Infinity);
+      actions['contact-idle'].reset().fadeIn(0.5).play();
+      actions['contact-idle'].setLoop(THREE.LoopRepeat, Infinity);
     } else if (actions['idle']) {
-        actions['idle'].reset().fadeIn(0.5).play();
-        actions['idle'].setLoop(THREE.LoopRepeat, Infinity);
+      actions['idle'].reset().fadeIn(0.5).play();
+      actions['idle'].setLoop(THREE.LoopRepeat, Infinity);
     }
   }, [actions]);
 
-  // Visibility & idle animation
-  useFrame(({ clock }) => {
+  // ── Per-frame: visibility & performance optimization ──────────────────
+  useFrame((state, delta) => {
     if (!groupRef.current) return;
     const section = useStore.getState().activeSection;
-    const targetOpacity = section === 'contact' ? 1 : 0;
-    opacityRef.current += (targetOpacity - opacityRef.current) * 0.05;
-    groupRef.current.visible = opacityRef.current > 0.01;
+    const isContact = section === 'contact';
 
-    groupRef.current.traverse((child) => {
-      if (child.isMesh && child.material) {
-        child.material.transparent = true;
-        child.material.opacity = opacityRef.current;
+    // Faster transition speed
+    const targetOpacity = isContact ? 1 : 0;
+    const prevOpacity = opacityRef.current;
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.15);
+
+    // Strict visibility toggle
+    const shouldBeVisible = opacityRef.current > 0.01;
+    if (groupRef.current.visible !== shouldBeVisible) {
+      groupRef.current.visible = shouldBeVisible;
+
+      // Pause/Resume animations
+      if (actions) {
+        Object.values(actions).forEach(action => {
+          if (action) action.paused = !shouldBeVisible;
+        });
       }
-    });
+    }
 
-    if (section === 'contact') {
-      const t = clock.elapsedTime;
-      groupRef.current.position.y = -0.6 + Math.sin(t * 0.6) * 0.025;
+    // Only traverse to update materials if opacity is actually changing
+    if (Math.abs(opacityRef.current - prevOpacity) > 0.001) {
+      groupRef.current.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.transparent = true;
+          child.material.opacity = opacityRef.current;
+          if (opacityRef.current > 0.99) child.material.transparent = false;
+        }
+      });
+    }
+
+    // Procedural movement only when visible
+    if (shouldBeVisible) {
+      const t = state.clock.elapsedTime;
+      // Centered at -1.8 to match the floor level of the other models
+      groupRef.current.position.y = -1.8 + Math.sin(t * 0.6) * 0.025;
       groupRef.current.rotation.y = Math.sin(t * 0.2) * 0.04;
     }
   });
@@ -70,7 +96,7 @@ export default function ContactModel() {
   return (
     <group
       ref={groupRef}
-      position={[0, -0.6, 0]}
+      position={[0, -1.8, 0]}
       rotation={[0, 0.15, 0]}
       scale={1.05}
     >

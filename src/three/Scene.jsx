@@ -10,7 +10,7 @@ import './Scene.css';
 
 // ─── Camera sections config ───────────────────────────────────────────────────────────────────────────────────
 const CAMERA_STATES = {
-  home: { pos: [0, 2.5, 7.5], target: [0.8, 0.5, 0], fov: 38 },
+  home: { pos: [0, 1.5, 6], target: [0.8, 0.5, 0], fov: 35 },
   about: { pos: [0, 1.6, 5.5], target: [0, 1.0, 0], fov: 36 },
   projects: { pos: [0, 4.0, 9.0], target: [0, 0.0, 0], fov: 35 },
   contact: { pos: [0, 1.4, 6.0], target: [0.4, 0.6, 0], fov: 40 },
@@ -156,20 +156,20 @@ export default function Scene() {
   return (
     <div className="canvas-root">
       <Canvas
-        camera={{ fov: 38, near: 0.05, far: 200, position: [2.2, 3, .0] }}
+        camera={{ fov: 35, near: 0.05, far: 200, position: [0, 1.5, 6] }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
         shadows="soft"
         dpr={[1, Math.min(window.devicePixelRatio, 2)]}
       >
+        <fog attach="fog" args={['#f5f3ee', 8, 20]} />
         <ProgressSync />
         <CameraRig />
 
         {/* ── Lighting ── */}
-        <ambientLight intensity={1.4} color="#FFF8F0" />
+        <ambientLight intensity={0.6} />
         <directionalLight
-          position={[5, 8, 5]}
-          intensity={2.0}
-          color="#FFFFFF"
+          position={[5, 5, 5]}
+          intensity={1.2}
           castShadow
           shadow-mapSize={[2048, 2048]}
           shadow-camera-near={0.1}
@@ -179,12 +179,13 @@ export default function Scene() {
           shadow-camera-top={8}
           shadow-camera-bottom={-8}
         />
-        <directionalLight position={[-3, 4, -2]} intensity={0.6} color="#E8F0FF" />
+        <directionalLight position={[-5, 3, -2]} intensity={0.4} />
+        <hemisphereLight skyColor={"#ffffff"} groundColor={"#f5e6d3"} intensity={0.6} />
 
         {/* ── Environment for PBR textures — apartment gives warm/neutral lighting ── */}
         <Environment preset="apartment" background={false} />
 
-        {/* ── 3D Models ── */}
+        {/* ── 3D Models ── */}k
         <Suspense fallback={null}>
           {/* Hero: desk + character scene */}
           <HeroModel />
@@ -196,10 +197,10 @@ export default function Scene() {
 
         {/* ── Ground shadow (hero only) ── */}
         <ContactShadows
-          position={[0, -0.01, 0]}
-          opacity={0.35}
-          scale={14}
-          blur={2.5}
+          position={[0, -1.5, 0]}
+          opacity={0.4}
+          scale={10}
+          blur={2}
           far={4}
         />
       </Canvas>
