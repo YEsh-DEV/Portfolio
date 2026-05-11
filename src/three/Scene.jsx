@@ -78,22 +78,27 @@ function CameraRig() {
   return null;
 }
 
-// ─── Loading Progress Sync ────────────────────────────────────────────────────
 function ProgressSync() {
   const { progress, active } = useProgress();
 
   useEffect(() => {
-    // Update store directly without subscribing to it in this component
-    useStore.getState().setLoadProgress(progress);
+    const state = useStore.getState();
     
-    if (!active && progress === 100) {
-      const timer1 = setTimeout(() => {
-        useStore.getState().setLoading(false);
-        const timer2 = setTimeout(() => useStore.getState().setShowContent(true), 700);
-        return () => clearTimeout(timer2);
-      }, 800);
-      return () => clearTimeout(timer1);
-    }
+    // Use rAF to ensure we are outside the React render/commit phase
+    const rafId = requestAnimationFrame(() => {
+      if (state.loadProgress !== progress) {
+        state.setLoadProgress(progress);
+      }
+      
+      if (!active && progress === 100 && state.isLoading) {
+        const timer1 = setTimeout(() => {
+          useStore.getState().setLoading(false);
+          const timer2 = setTimeout(() => useStore.getState().setShowContent(true), 700);
+        }, 800);
+      }
+    });
+
+    return () => cancelAnimationFrame(rafId);
   }, [progress, active]);
 
   return null;

@@ -234,19 +234,24 @@ export default function HeroModel() {
     const clone = deskScene.clone(true);
     clone.traverse((child) => {
       if (!child.isMesh) return;
+      
+      const lowercaseName = child.name.toLowerCase();
+      // Debug screens if needed
+      // if (lowercaseName.includes('monitor') || lowercaseName.includes('plane')) console.log('[DEBUG] mesh:', child.name);
+
       child.castShadow = true;
       child.receiveShadow = true;
 
-      const name = child.name;
+      const meshName = child.name;
 
       // ── Hidden ──
-      if (name === 'shadow-catcher') {
+      if (meshName === 'shadow-catcher') {
         child.visible = false;
         return;
       }
 
       // ── PRIMARY screen (desktop-plane-1) → videoTex ──
-      if (name === 'desktop-plane-1') {
+      if (meshName === 'desktop-plane-1') {
         const mat = new THREE.MeshStandardMaterial({
           map: videoTex || monitor1Tex,
           roughness: 0.4,
@@ -262,7 +267,7 @@ export default function HeroModel() {
       }
 
       // ── SECONDARY screen ──
-      if (name.startsWith('desktop-plane-') && name !== 'desktop-plane-0' && name !== 'desktop-plane-1') {
+      if (meshName.startsWith('desktop-plane-') && meshName !== 'desktop-plane-0' && meshName !== 'desktop-plane-1') {
         const mat = new THREE.MeshStandardMaterial({
           map: monitor2Tex,
           roughness: 0.4,
@@ -278,7 +283,7 @@ export default function HeroModel() {
       }
 
       // ── Monitor bezel/body ──
-      if (name === 'desktop-plane-0') {
+      if (meshName === 'desktop-plane-0') {
         child.material = new THREE.MeshStandardMaterial({
           color: new THREE.Color('#2A2D35'), // dull black / dark charcoal
           roughness: 0.75,
@@ -288,7 +293,7 @@ export default function HeroModel() {
       }
 
       // ── Music icon ──
-      if (name === 'music') {
+      if (meshName === 'music') {
         child.material = new THREE.MeshStandardMaterial({
           map: bgTex,
           transparent: true,
@@ -300,7 +305,7 @@ export default function HeroModel() {
       }
 
       // ── Corkboard / Blackboard ──
-      if (name === 'blackboard') {
+      if (meshName === 'blackboard') {
         child.material = new THREE.MeshStandardMaterial({
           color: new THREE.Color('#AF9782'), // warm beige base
           roughness: 0.85,
@@ -312,7 +317,7 @@ export default function HeroModel() {
       }
 
       // ── Carpet ──
-      if (name === 'carpet') {
+      if (meshName === 'carpet') {
         child.material = new THREE.MeshStandardMaterial({
           map: carpetTexRef.current,
           roughness: 0.95, // very matte fabric
@@ -324,10 +329,10 @@ export default function HeroModel() {
       }
 
       // ── MESHES WITH VERTEX COLORS (Books, Rubik's cube, Pot, Pins, Desk Legs) ──
-      if (['shelf', 'plant', 'frame', 'blackboard'].includes(name)) {
+      if (['shelf', 'plant', 'frame', 'blackboard'].includes(meshName)) {
         let roughness = 0.85;
-        if (name === 'plant') roughness = 0.55;
-        if (name === 'shelf') roughness = 0.8;
+        if (meshName === 'plant') roughness = 0.55;
+        if (meshName === 'shelf') roughness = 0.8;
 
         child.material = new THREE.MeshStandardMaterial({
           color: new THREE.Color('#FFFFFF'), // Pure white to let vertex colors shine
@@ -337,24 +342,24 @@ export default function HeroModel() {
           envMapIntensity: 0.0,
         });
 
-        if (name === 'plant' || name === 'blackboard') {
+        if (meshName === 'plant' || meshName === 'blackboard') {
           child.castShadow = false;
         }
-        if (name === 'plant') {
+        if (meshName === 'plant') {
           child.receiveShadow = false;
         }
         return;
       }
 
       // ── All other exactly named nodes ──
-      const color = DESK_COLORS[name];
+      const color = DESK_COLORS[meshName];
       if (color) {
         let roughness = 0.85; // default fallback
 
         // Exact roughness matching based on prompt
-        if (name === 'desk' || name === 'room') roughness = 0.75;
-        if (name === 'chair') roughness = 0.65;
-        if (name === 'mouse' || name.startsWith('penguin')) roughness = 0.7;
+        if (meshName === 'desk' || meshName === 'room') roughness = 0.75;
+        if (meshName === 'chair') roughness = 0.65;
+        if (meshName === 'mouse' || meshName.startsWith('penguin')) roughness = 0.7;
 
         const mat = new THREE.MeshStandardMaterial({
           color: new THREE.Color(color),
