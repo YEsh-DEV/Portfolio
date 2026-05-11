@@ -81,15 +81,18 @@ function CameraRig() {
 // ─── Loading Progress Sync ────────────────────────────────────────────────────
 function ProgressSync() {
   const { progress, active } = useProgress();
-  const { setLoadProgress, setLoading, setShowContent } = useStore();
 
   useEffect(() => {
-    setLoadProgress(progress);
+    // Update store directly without subscribing to it in this component
+    useStore.getState().setLoadProgress(progress);
+    
     if (!active && progress === 100) {
-      setTimeout(() => {
-        setLoading(false);
-        setTimeout(() => setShowContent(true), 700);
+      const timer1 = setTimeout(() => {
+        useStore.getState().setLoading(false);
+        const timer2 = setTimeout(() => useStore.getState().setShowContent(true), 700);
+        return () => clearTimeout(timer2);
       }, 800);
+      return () => clearTimeout(timer1);
     }
   }, [progress, active]);
 

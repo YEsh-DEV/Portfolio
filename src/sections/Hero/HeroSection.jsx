@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { personalInfo } from '../../data/projects';
 import useStore from '../../store/useStore';
+import RotatingText from '../../components/RotatingText/RotatingText';
 import './HeroSection.css';
 
 const ease       = [0.22, 1, 0.36, 1];
@@ -324,7 +325,17 @@ export default function HeroSection() {
           transition={{ duration: 0.58, delay: 3.4, ease: easeBounce }}
         >
           <span className="hero-badge__dot" aria-hidden="true" />
-          <span>{personalInfo.title}</span>
+          <RotatingText
+            texts={['AI ENGINEER', 'FULL-STACK DEV', 'UI DESIGNER']}
+            mainClassName="hero-rotating-text"
+            staggerFrom="last"
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-120%", opacity: 0 }}
+            staggerDuration={0.02}
+            splitBy="characters"
+            rotationInterval={2500}
+          />
         </motion.div>
       </motion.div>
 
