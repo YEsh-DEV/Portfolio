@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
 import { projects } from '../../data/projects';
+import RotatingText from '../../components/RotatingText/RotatingText';
 import './ProjectsSection.css';
 
 export default function ProjectsSection() {
@@ -18,7 +19,19 @@ export default function ProjectsSection() {
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         >
           <span className="section-badge">Selected</span>
-          <h2 className="projects-section__title">Projects</h2>
+          <h2 className="projects-section__title">
+            <RotatingText
+              texts={['Projects', 'Works', 'Creations', 'Concepts']}
+              mainClassName="projects-rotating-text"
+              staggerFrom="last"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-120%" }}
+              staggerDuration={0.025}
+              splitBy="characters"
+              rotationInterval={3000}
+            />
+          </h2>
         </motion.div>
 
         {/* Project Grid — auto-renders from projects.js */}

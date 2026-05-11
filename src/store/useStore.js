@@ -8,8 +8,10 @@ const useStore = create((set) => ({
   // ---- Loading ----
   isLoading: true,
   loadProgress: 0,
+  showContent: false,
   setLoading: (val) => set({ isLoading: val }),
   setLoadProgress: (val) => set({ loadProgress: val }),
+  setShowContent: (val) => set({ showContent: val }),
 
   // ---- Active Section (scroll-driven) ----
   activeSection: 'home',

@@ -21,7 +21,14 @@
   font-size: clamp(2.5rem, 5vw, 4rem);
   color: var(--text-dark);
   line-height: 1.1;
-  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Inherit styles for the rotating text from the title, add subtle warm brown tint */
+.projects-rotating-text {
+  color: var(--accent-brown);
 }
 
 /* ---- Grid ---- */

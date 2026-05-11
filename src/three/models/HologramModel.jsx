@@ -104,9 +104,9 @@ export default function HologramModel() {
     const section = useStore.getState().activeSection;
     const isAbout = section === 'about';
 
-    // HARD CUT: If we are on the home section, the hologram MUST be invisible immediately.
-    // This prevents it from appearing while the user is still on the landing page.
-    if (section === 'home') {
+    // HARD CUT: If we are NOT on the about section, the hologram MUST be invisible immediately.
+    // This prevents it from bleeding into the Hero or other sections.
+    if (!isAbout) {
       opacityRef.current = 0;
       if (groupRef.current.visible) groupRef.current.visible = false;
       return;

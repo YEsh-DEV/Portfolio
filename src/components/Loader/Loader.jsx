@@ -20,9 +20,16 @@ export default function Loader() {
     <div className={`loader ${!isLoading ? 'loader--done' : ''}`} role="status" aria-live="polite">
       <div className="loader-inner">
         {/* Name letters */}
-        <div className="loader-name" aria-label="Loading Yeshwanth's portfolio">
-          {'Yeshwanth'.split('').map((char, i) => (
-            <span key={i} style={{ animationDelay: `${i * 0.07}s` }}>{char}</span>
+        <div className="loader-name" aria-label="Hello World">
+          {'HELLO WORLD'.split('').map((char, i) => (
+            <span 
+              key={i} 
+              className="glitch-letter" 
+              data-text={char}
+              style={{ animationDelay: `${i * 0.08}s` }}
+            >
+              {char === ' ' ? '\u00A0' : char}
+            </span>
           ))}
         </div>
 

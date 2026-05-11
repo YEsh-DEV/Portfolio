@@ -9,7 +9,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
-  const { activeSection, setActiveSection, isMuted, toggleMute } = useStore();
+  const { activeSection, setActiveSection, isMuted, toggleMute, showContent } = useStore();
 
   const handleNavClick = (sectionId) => {
     setActiveSection(sectionId);
@@ -21,6 +21,8 @@ export default function Navbar() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setActiveSection('home');
   };
+
+  if (!showContent) return null;
 
   return (
     <header className="navbar" role="banner">

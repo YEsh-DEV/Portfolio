@@ -28,18 +28,64 @@
 .loader-name {
   font-family: var(--font-primary);
   font-weight: 900;
-  font-size: clamp(2.8rem, 8vw, 5.5rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(2.0rem, 8vw, 4.5rem);
+  letter-spacing: 0.15em;
   color: var(--text-dark);
   display: flex;
 }
-.loader-name span {
+.glitch-letter {
+  position: relative;
   display: inline-block;
-  animation: letterIn 0.55s var(--ease-bounce) both;
+  opacity: 0;
+  animation: glitchIn 0.4s var(--ease-smooth) both, flicker 2s infinite 0.5s;
 }
-@keyframes letterIn {
-  from { opacity: 0; transform: translateY(-30px) rotate(-5deg); }
-  to   { opacity: 1; transform: translateY(0) rotate(0); }
+
+@keyframes glitchIn {
+  0% { opacity: 0; transform: translateY(10px) skewX(20deg); filter: blur(10px); }
+  20% { opacity: 1; transform: translateY(-2px) skewX(-20deg); filter: blur(0); }
+  40% { transform: translateY(1px) skewX(10deg); }
+  100% { opacity: 1; transform: translateY(0) skewX(0); }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; transform: none; }
+  20%, 22%, 24%, 55% { opacity: 0.8; transform: translate(2px, 1px); }
+}
+
+.glitch-letter::before,
+.glitch-letter::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-letter::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00c1;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch-letter::after {
+  left: -2px;
+  text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+  animation: glitch-anim2 1s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
+  5% { clip: rect(70px, 9999px, 71px, 0); transform: skew(0.85deg); }
+  /* ... more clips if needed ... */
+  100% { clip: rect(67px, 9999px, 62px, 0); transform: skew(0.6deg); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.15deg); }
+  100% { clip: rect(4px, 9999px, 100px, 0); transform: skew(0.15deg); }
 }
 
 /* Progress bar */

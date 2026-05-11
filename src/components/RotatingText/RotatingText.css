@@ -1,0 +1,50 @@
+/* ─── RotatingText component styles ─────────────────────────────────────────
+   Palette-matched: warm brown ink on cream background
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.text-rotate {
+  display: inline-flex;
+  flex-wrap: wrap;
+  white-space: pre-wrap;
+  position: relative;
+  overflow: hidden;
+  /* Clip the slide-in/slide-out — no text bleeds outside the span */
+  vertical-align: bottom;
+}
+
+/* Screen-reader only — hidden visually */
+.text-rotate-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Word wrapper — keeps letters together */
+.text-rotate-word {
+  display: inline-flex;
+}
+
+/* Multiline mode */
+.text-rotate-lines {
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Each animated character */
+.text-rotate-element {
+  display: inline-block;
+  /* Characters can't have line-break before them */
+  white-space: pre;
+}
+
+.text-rotate-space {
+  white-space: pre;
+  display: inline-block;
+}

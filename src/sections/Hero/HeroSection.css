@@ -1,6 +1,5 @@
 /* ============================================================
-   HERO SECTION — Matched to reference site
-   Replace your existing HeroSection.css with this file
+   HERO SECTION — Premium warm cinematic minimal workspace
    ============================================================ */
 
 .hero-section {
@@ -12,87 +11,309 @@
   align-items: center;
   padding: 0 var(--section-pad-h);
   background: transparent;
-  /* ← transparent: shows --bg-cream from body */
   overflow: hidden;
 }
 
-/* Subtle warm vignette — matches reference's soft blue-cream edges */
+/* ── Ambient layered warm glow ── */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    /* warm golden-brown pool — scene grounding */
+    radial-gradient(ellipse 72% 58% at 70% 60%,
+      rgba(156, 123, 93, 0.11), transparent 64%),
+    /* very subtle cream breath — behind text */
+    radial-gradient(ellipse 48% 55% at 10% 50%,
+      rgba(239, 231, 219, 0.18), transparent 60%),
+    /* cool blue whisper — monitor corona, top-right */
+    radial-gradient(ellipse 38% 55% at 90% 16%,
+      rgba(37, 99, 235, 0.05), transparent 52%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Edge vignette — directional, very subtle ── */
 .hero-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
   background:
-    radial-gradient(circle at 70% 50%, rgba(0,0,0,0.08), transparent 60%),
-    radial-gradient(circle at 0% 100%, rgba(20,55,200,0.08), transparent 60%);
+    linear-gradient(to left,   rgba(0,0,0,0.032) 0%, transparent 30%),
+    linear-gradient(to top,    rgba(0,0,0,0.022) 0%, transparent 26%),
+    linear-gradient(to bottom, rgba(0,0,0,0.012) 0%, transparent 18%);
 }
 
-/* ── Text block — left side ── */
+/* ── Hero text block — left ── */
 .hero-text {
   position: relative;
   z-index: 2;
-  width: 48%;
-  max-width: 560px;
+  width: 40%;
+  max-width: 500px;
+  margin-left: 5.5vw;
+  animation: heroFloat 9s ease-in-out infinite alternate;
 }
 
-/* Big bold name — Urbanist Black 900 */
+@keyframes heroFloat {
+  0%   { transform: translateY(0px);  }
+  100% { transform: translateY(-8px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CURSIVE HANDWRITING ANIMATION — "Yeshwanth"
+   Technique: SVG <text> stroke-dashoffset → fill-opacity reveal
+   The actual letter outlines are drawn stroke-by-stroke via RAF.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Container */
+.hn-wrap {
+  position: relative;
+  display: block;
+  margin-bottom: 0.8rem;
+  /* Ensure overflow visible so ascenders (Y, h) aren't clipped */
+  overflow: visible;
+}
+
+/* The SVG that contains the drawn name + ink cursor */
+.hn-svg {
+  display: block;
+  /* Width 100% of parent (.hero-text), height proportional to viewBox */
+  width: 100%;
+  max-width: 580px;
+  height: auto;
+  overflow: visible;
+}
+
+/* The <text> element — styled for cursive handwriting look */
+.hn-text-path {
+  /*
+    paint-order: stroke fill
+    Critical: renders the dark stroke BEHIND the fill so when fill
+    fades in over the stroke, it looks like ink settling into paper.
+  */
+  paint-order: stroke fill;
+  /*
+    cursor-events: none — the text element is purely visual
+  */
+  pointer-events: none;
+
+  /* Subtle text shadow for depth (applied via CSS filter on the SVG) */
+}
+
+/* The pulsing ring around the ink dot — appears while drawing */
+.hn-dot-ring {
+  opacity: 0;
+  animation: hn-ring-pulse 0.9s ease-out infinite;
+  /* Only visible while drawing — JS hides it when animation ends */
+}
+
+@keyframes hn-ring-pulse {
+  0%   { r: 6;  opacity: 0.55; }
+  100% { r: 14; opacity: 0; }
+}
+
+/* The flourish SVG — calligraphic underline that draws after name */
+.hn-flourish-svg {
+  display: block;
+  width: 100%;
+  max-width: 580px;
+  height: 32px;
+  margin-top: -6px;
+  overflow: visible;
+  /* opacity controlled by JS */
+}
+
+/* Soft drop shadow on entire SVG area for premium depth */
+.hn-svg,
+.hn-flourish-svg {
+  filter: drop-shadow(0 8px 20px rgba(40, 38, 36, 0.10));
+}
+
+/* ── Legacy .hero-name — kept for any remaining references ── */
 .hero-name {
-  font-family: var(--font-primary);
-  font-weight: 900;
-  /* Reference: name breaks to 2 lines, very large */
-  font-size: clamp(2.8rem, 6vw, 5.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.04em;
-  color: var(--text-dark);
-  /* #1a1a1a — very dark near-black */
-  margin-bottom: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: clamp(3.8rem, 7vw, 7rem);
+  line-height: 1.08;
+  color: #282624;
+  margin-bottom: 1.2rem;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 12px 32px rgba(0,0,0,0.07);
 }
 
-.hero-name span {
-  display: inline-block;
-}
-
-/* 
-  If your name has a space (two words), force 2-line layout:
-  Add a <br/> or space character as a span that takes full width
-*/
 .hero-name__break {
   width: 100%;
   display: block;
   height: 0;
 }
 
-/* "WEB DEVELOPER" badge — ProFont mono, blue pill */
+
+
+/* ── AI Engineer Badge — warm handcrafted sticker ── */
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  background: var(--accent-blue);
-  /* #1b4fd8 — exact blue from reference */
-  border-radius: 6px;
-  padding: 0.42rem 0.9rem;
-  margin-top: 0.6rem;
-  box-shadow: 0 8px 20px rgba(27,79,216,0.3);
+  gap: 0.55rem;
+
+  /* Warm brown sticker — feels handcrafted */
+  background: linear-gradient(148deg,
+    #9c7b5d 0%,
+    #7d6148 55%,
+    #6e5643 100%
+  );
+  border-radius: 10px;
+  padding: 0.54rem 1.2rem 0.54rem 0.95rem;
+
+  /* Layered tactile shadow — sticker depth */
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.14) inset,
+    0 1px 0 rgba(255,255,255,0.10) inset,
+    0 4px 0 rgba(60, 38, 22, 0.55),    /* hard press shadow */
+    0 8px 24px rgba(110, 86, 67, 0.28),/* soft diffuse */
+    0 2px 6px rgba(110, 86, 67, 0.18);
+
+  border: 1px solid rgba(156, 123, 93, 0.55);
+
+  /* Permanent slight tilt — playful, like david-hckh */
+  transform: rotate(-2.5deg);
+  transform-origin: left center;
+
+  /* Micro floating animation on top of hero float */
+  animation: badgeFloat 6s ease-in-out infinite alternate;
+
+  transition:
+    transform 0.38s var(--ease-bounce),
+    box-shadow 0.3s var(--ease-smooth),
+    filter 0.25s ease;
+  cursor: default;
 }
 
-.hero-badge span {
+@keyframes badgeFloat {
+  0%   { transform: rotate(-2.5deg) translateY(0px);  }
+  100% { transform: rotate(-2.5deg) translateY(-4px); }
+}
+
+.hero-badge:hover {
+  transform: rotate(-1.5deg) translateY(-4px) scale(1.04);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.20) inset,
+    0 1px 0 rgba(255,255,255,0.14) inset,
+    0 5px 0 rgba(60, 38, 22, 0.60),
+    0 14px 36px rgba(110, 86, 67, 0.38),
+    0 4px 10px rgba(110, 86, 67, 0.22);
+  filter: brightness(1.06);
+  animation: none; /* pause float on hover */
+}
+
+/* Live dot */
+.hero-badge__dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b8d9b0;
+  box-shadow: 0 0 0 0 rgba(184, 217, 176, 0.5);
+  animation: dotPulse 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(184, 217, 176, 0.5);  }
+  50%       { box-shadow: 0 0 0 5px rgba(184, 217, 176, 0);    }
+}
+
+.hero-badge > span:last-child {
   font-family: var(--font-mono);
-  /* ProFont — the chunky monospace */
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #fff;
+  color: #f0e8dc;
   white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.30);
 }
 
-/* ── Scroll indicator — bottom center ── */
+/* ── Floor glow — warm amber pool ── */
+.hero-floor-glow {
+  position: absolute;
+  bottom: -5%;
+  right: 5%;
+  width: 720px;
+  height: 420px;
+  background:
+    radial-gradient(ellipse 62% 46% at 50% 80%,
+      rgba(200, 151, 58, 0.18), transparent 68%);
+  filter: blur(64px);
+  pointer-events: none;
+  z-index: 0;
+  transform: scaleX(1.3);
+}
+
+/* ── Bokeh particles ── */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(26px);
+  animation: floatBokeh var(--dur, 9s) var(--delay, 0s) ease-in-out infinite alternate;
+}
+
+/* Warm cream — behind scene */
+.particle--1 {
+  width: 150px; height: 150px; top: 14%; left: 58%;
+  --dur: 11s; --delay: 0s;
+  background: rgba(239, 231, 219, 0.55);
+  opacity: 0.45;
+}
+/* Soft blue — monitor area */
+.particle--2 {
+  width: 80px; height: 80px; top: 8%; left: 84%;
+  --dur: 15s; --delay: -5s;
+  background: rgba(100, 150, 240, 0.25);
+  opacity: 0.32;
+}
+/* Large warm right */
+.particle--3 {
+  width: 200px; height: 200px; top: 35%; left: 91%;
+  --dur: 13s; --delay: -7.5s;
+  background: rgba(239, 231, 219, 0.18);
+  opacity: 0.20;
+}
+/* Small warm amber bottom */
+.particle--4 {
+  width: 70px; height: 70px; top: 66%; left: 54%;
+  --dur: 9s; --delay: -2.5s;
+  background: rgba(200, 151, 58, 0.28);
+  opacity: 0.32;
+}
+/* Top-right faint blue */
+.particle--5 {
+  width: 110px; height: 110px; top: 4%; left: 96%;
+  --dur: 14s; --delay: -10s;
+  background: rgba(170, 200, 255, 0.22);
+  opacity: 0.24;
+}
+
+@keyframes floatBokeh {
+  0%   { transform: translate(0,     0)    scale(1);    }
+  30%  { transform: translate(-9px, -15px) scale(1.03); }
+  65%  { transform: translate(6px,  -6px)  scale(0.97); }
+  100% { transform: translate(8px,   12px) scale(0.94); }
+}
+
+/* ── Scroll indicator ── */
 .hero-scroll-hint {
   position: absolute;
-  bottom: 2.2rem;
+  bottom: 2.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -101,74 +322,56 @@
   gap: 6px;
   z-index: 2;
   pointer-events: none;
+  opacity: 0.42;
 }
 
 .scroll-mouse {
-  width: 26px;
-  height: 42px;
-  border: 2px solid rgba(26, 26, 26, 0.45);
-  border-radius: 13px;
+  width: 22px;
+  height: 35px;
+  border: 1.5px solid #4a3f35;
+  border-radius: 11px;
   display: flex;
   justify-content: center;
-  padding-top: 7px;
+  padding-top: 5px;
 }
 
 .scroll-dot {
-  width: 4px;
-  height: 4px;
-  background: var(--text-dark);
+  width: 2.5px;
+  height: 2.5px;
+  background: #4a3f35;
   border-radius: 50%;
-  animation: scrollDot 2s ease-in-out infinite;
+  animation: scrollDot 2.5s ease-in-out infinite;
 }
 
 @keyframes scrollDot {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  60% {
-    transform: translateY(14px);
-    opacity: 0;
-  }
-
-  61% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  0%   { transform: translateY(0);    opacity: 1; }
+  60%  { transform: translateY(11px); opacity: 0; }
+  61%  { transform: translateY(0);    opacity: 0; }
+  100% { transform: translateY(0);    opacity: 1; }
 }
 
 .scroll-chevron {
-  width: 14px;
-  height: 9px;
-  color: rgba(26, 26, 26, 0.45);
-  animation: chevronBounce 2s ease-in-out infinite;
+  width: 11px; height: 7px;
+  color: #4a3f35;
+  animation: chevronBounce 2.5s ease-in-out infinite;
 }
 
 @keyframes chevronBounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(4px);
-  }
+  0%, 100% { transform: translateY(0);  }
+  50%       { transform: translateY(4px);}
 }
 
 /* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero-text { width: 52%; }
+}
 @media (max-width: 768px) {
   .hero-text {
     width: 90%;
+    margin-left: 0;
+    animation: none;
   }
-
-  .hero-name {
-    font-size: clamp(2.6rem, 11vw, 4rem);
-  }
+  .hero-name { font-size: clamp(3.2rem, 13.5vw, 5rem); }
+  .hero-floor-glow,
+  .hero-particles { display: none; }
 }
